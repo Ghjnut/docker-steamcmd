@@ -1,0 +1,10 @@
+#!/usr/bin/env bash
+[[ "$TRACE" ]] && set -x
+set -eu -o pipefail
+
+CONTAINER=steamcmd-auth
+TAG=test
+
+sudo docker run --interactive --tty --name $CONTAINER steamcmd ./steamcmd.sh +login $STEAM_LOGIN $STEAM_PASSWORD +quit
+sudo docker commit --author "$DOCKER_AUTHOR" --message "Authorize steamcmd with steamguard" $CONTAINER steamcmd:$TAG
+sudo docker rm --force --volumes $CONTAINER
