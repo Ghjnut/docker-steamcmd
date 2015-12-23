@@ -2,9 +2,18 @@
 [[ "$TRACE" ]] && set -x
 set -eu -o pipefail
 
-CONTAINER=steamcmd-auth
-TAG=test
+cleanup() {
+	docker rm --force --volumes $STEAMCMD_CONTAINER
+}
 
-sudo docker run --interactive --tty --name $CONTAINER steamcmd ./steamcmd.sh +login $STEAM_LOGIN $STEAM_PASSWORD +quit
-sudo docker commit --author "$DOCKER_AUTHOR" --message "Authorize steamcmd with steamguard" $CONTAINER steamcmd:$TAG
-sudo docker rm --force --volumes $CONTAINER
+main () {
+	TAG=auth
+	trap "cleanup" EXIT
+
+	cleanup || true
+
+	docker run --interactive --tty --name $STEAMCMD_CONTAINER $STEAMCMD_IMAGE +login $STEAM_LOGIN $STEAM_PASSWORD +quit
+	docker commit --author "$DOCKER_AUTHOR" --message "Authorize steamcmd with steamguard" $STEAMCMD_CONTAINER $STEAMCMD_IMAGE:$TAG
+}
+
+main

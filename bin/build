@@ -2,4 +2,4 @@
 [[ "$TRACE" ]] && set -x
 set -eu -o pipefail
 
-docker build --tag=steamcmd .
+docker build --tag="$STEAMCMD_IMAGE" .
