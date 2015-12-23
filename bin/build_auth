@@ -3,7 +3,7 @@
 set -eu -o pipefail
 
 cleanup() {
-	docker rm --force --volumes $STEAMCMD_CONTAINER
+	docker rm --force "$STEAMCMD_CONTAINER"
 }
 
 main () {
